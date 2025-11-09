@@ -2,9 +2,11 @@ package com.dabchy.plugins.facebookevents;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.facebook.FacebookSdk;
+import com.facebook.LoggingBehavior;
 import com.facebook.appevents.AppEventsLogger;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Logger;
@@ -88,6 +90,26 @@ public class FacebookEventsPlugin extends Plugin {
         call.resolve();
     }
 
+    @PluginMethod
+    public void getFBAnonymousID(PluginCall call) {
+        initializeFacebookSdk();
+        
+        Application application = resolveApplication();
+        if (application == null) {
+            call.reject("Unable to get anonymous ID because the application reference is null.");
+            return;
+        }
+
+        try {
+            String anonymousId = AppEventsLogger.getAnonymousAppDeviceGUID(application);
+            JSObject result = new JSObject();
+            result.put("anonymousID", anonymousId);
+            call.resolve(result);
+        } catch (Exception e) {
+            call.reject("Failed to get anonymous ID: " + e.getMessage());
+        }
+    }
+
     private void initializeFacebookSdk() {
         Application application = resolveApplication();
         if (application == null) {
@@ -106,8 +128,15 @@ public class FacebookEventsPlugin extends Plugin {
                 FacebookSdk.sdkInitialize(appContext);
             }
 
+            // Check if app is in debug mode
+            boolean isDebugMode = (appContext.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+            if (isDebugMode) {
+                FacebookSdk.setIsDebugEnabled(true);
+                FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
+            }
+
             FacebookSdk.setAutoInitEnabled(true);
-            FacebookSdk.setAutoLogAppEventsEnabled(true);
+            FacebookSdk.setAutoLogAppEventsEnabled(false);
             FacebookSdk.setAdvertiserIDCollectionEnabled(true);
         }
     }
@@ -129,4 +158,6 @@ public class FacebookEventsPlugin extends Plugin {
 
         return null;
     }
+
+    
 }

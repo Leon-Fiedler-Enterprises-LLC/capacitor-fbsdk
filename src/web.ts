@@ -6,8 +6,7 @@ declare let FB: any;
 
 export class FacebookEventsWeb
   extends WebPlugin
-  implements FacebookEventsPlugin
-{
+  implements FacebookEventsPlugin {
   constructor() {
     super();
     this.loadFBSDK();
@@ -42,5 +41,11 @@ export class FacebookEventsWeb
     } else {
       console.error('Facebook SDK not loaded');
     }
+  }
+
+  async getFBAnonymousID(): Promise<{ anonymousID: string }> {
+    return new Promise((resolve, reject) => {
+      reject('not implemented');
+    })
   }
 }

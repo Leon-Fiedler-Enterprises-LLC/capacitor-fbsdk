@@ -25,4 +25,11 @@ public class FacebookEventsPlugin: CAPPlugin {
         facebookEvents.logEvent(event: event, params: params as NSDictionary)
         call.resolve()
     }
+
+    @objc func getFBAnonymousID(_ call: CAPPluginCall) {
+        let anonymousID = facebookEvents.getFBAnonymousID()
+        call.resolve([
+            "anonymousID": anonymousID
+        ])
+    }
 }

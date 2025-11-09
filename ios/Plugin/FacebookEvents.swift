@@ -33,4 +33,10 @@ import FBSDKCoreKit
             AppEvents.shared.logEvent(eventName)
         }
     }
+
+
+    @objc public func getFBAnonymousID() -> String {
+        return AppEvents.shared.anonymousID
+    }
+
 }
