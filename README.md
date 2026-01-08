@@ -15,6 +15,7 @@ npx cap sync
 
 * [`setAdvertiserTrackingEnabled(...)`](#setadvertisertrackingenabled)
 * [`logEvent(...)`](#logevent)
+* [`getFBAnonymousID()`](#getfbanonymousid)
 
 </docgen-index>
 
@@ -46,43 +47,57 @@ logEvent(options: { event: string; params?: any; }) => Promise<void>
 
 --------------------
 
+
+### getFBAnonymousID()
+
+```typescript
+getFBAnonymousID() => Promise<{ anonymousID: string; }>
+```
+
+**Returns:** <code>Promise&lt;{ anonymousID: string; }&gt;</code>
+
+--------------------
+
 </docgen-api>
 
 ## Example Usage
 
-### Logging a Registration Event
-To log a registration event, use the 'fb_mobile_complete_registration' event name:
+### Getting the Facebook Anonymous ID
+To retrieve the Facebook Anonymous ID for attribution:
 
 ```typescript
 import { FacebookEvents } from 'capacitor-facebook-events';
 
-// ...
+const { anonymousID } = await FacebookEvents.getFBAnonymousID();
+console.log('Facebook Anonymous ID:', anonymousID);
+```
 
+### Logging Custom Events
+To log custom user action events:
+
+```typescript
+import { FacebookEvents } from 'capacitor-facebook-events';
+
+// Log a registration event
 FacebookEvents.logEvent({
     event: 'fb_mobile_complete_registration',
     params: {
-// Additional parameters (optional)
+        registration_method: 'email'
     }
 });
-```
 
-### Logging a Purchase Event
-For logging a purchase event, use the 'fb_mobile_purchase' event name with relevant parameters:
-
-```typescript
-import { FacebookEvents } from 'capacitor-facebook-events';
-
-// ...
-
+// Log a custom user action
 FacebookEvents.logEvent({
-    event: 'fb_mobile_purchase',
+    event: 'user_started_trial',
     params: {
-        fb_content_id: 'item_id', // Item ID
-        fb_content_type: 'product',
-        fb_currency: 'currency_code',
-        _valueToSum: amount // Purchase amount
+        plan_type: 'premium'
     }
 });
 ```
 
-For a comprehensive list of events, refer to the [Facebook App Events API documentation](https://developers.facebook.com/docs/marketing-api/app-event-api/).
+### Important Notes
+- **Install events** are automatically tracked when the plugin initializes
+- **Purchase events** should NOT be logged manually - RevenueCat sends server-to-server notifications to Meta for accurate purchase tracking
+- Auto-logging is disabled to prevent duplicate purchase events
+
+For a comprehensive list of standard events, refer to the [Facebook App Events API documentation](https://developers.facebook.com/docs/marketing-api/app-event-api/).

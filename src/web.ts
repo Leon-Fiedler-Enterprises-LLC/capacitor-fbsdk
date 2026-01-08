@@ -44,8 +44,6 @@ export class FacebookEventsWeb
   }
 
   async getFBAnonymousID(): Promise<{ anonymousID: string }> {
-    return new Promise((resolve, reject) => {
-      reject('not implemented');
-    })
+    return Promise.reject('getFBAnonymousID is not implemented on web platform');
   }
 }
