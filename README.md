@@ -16,6 +16,7 @@ npx cap sync
 * [`setAdvertiserTrackingEnabled(...)`](#setadvertisertrackingenabled)
 * [`logEvent(...)`](#logevent)
 * [`getFBAnonymousID()`](#getfbanonymousid)
+* [`logPurchase(...)`](#logpurchase)
 
 </docgen-index>
 
@@ -55,6 +56,19 @@ getFBAnonymousID() => Promise<{ anonymousID: string; }>
 ```
 
 **Returns:** <code>Promise&lt;{ anonymousID: string; }&gt;</code>
+
+--------------------
+
+
+### logPurchase(...)
+
+```typescript
+logPurchase(options: { amount: number; currency: string; transactionId: string; productId: string; }) => Promise<void>
+```
+
+| Param         | Type                                                                                         |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| **`options`** | <code>{ amount: number; currency: string; transactionId: string; productId: string; }</code> |
 
 --------------------
 

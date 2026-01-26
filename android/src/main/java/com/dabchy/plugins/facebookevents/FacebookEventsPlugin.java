@@ -90,6 +90,32 @@ public class FacebookEventsPlugin extends Plugin {
         call.resolve();
     }
 
+
+    @PluginMethod
+    public void logPurchase(PluginCall call) {
+        Double amount = call.getDouble("amount");
+        String currencyString = call.getString("currency");
+        String transactionId = call.getString("transactionId");
+        String productId = call.getString("productId");
+        JSObject params = call.getObject("params", new JSObject());
+
+        if (amount == null || currencyString == null || transactionId == null || productId == null) {
+            call.reject("Amount, Currency, Transaction ID, and Product ID are required");
+            return;
+        }
+
+        initializeFacebookSdk();
+
+        if (facebookEvents == null) {
+            facebookEvents = new FacebookEvents(this);
+        }
+
+        facebookEvents.logPurchase(amount, currencyString, transactionId, productId, params);
+
+        call.resolve();
+    }
+
+
     @PluginMethod
     public void getFBAnonymousID(PluginCall call) {
         initializeFacebookSdk();

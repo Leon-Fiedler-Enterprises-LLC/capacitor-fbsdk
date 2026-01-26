@@ -9,7 +9,7 @@ import FBSDKCoreKit
         Settings.shared.isAdvertiserTrackingEnabled = enabled
     }
 
-    /// Convertit un NSDictionary en paramètres pour le SDK Facebook
+
     private func convertNSDictionaryToFBParameters(_ dict: NSDictionary?) -> [AppEvents.ParameterName: Any] {
         var parameters: [AppEvents.ParameterName: Any] = [:]
         if let dict = dict {
@@ -22,7 +22,7 @@ import FBSDKCoreKit
         return parameters
     }
 
-    /// Enregistre un événement personnalisé
+
     @objc public func logEvent(event: String, params: NSDictionary?) {
         let eventName = AppEvents.Name(event)
 
@@ -35,8 +35,20 @@ import FBSDKCoreKit
     }
 
 
+    @objc public func logPurchase(amount: Double, currency: String, transactionId: String, productId: String, params: NSDictionary?) {
+        var fbParameters = convertNSDictionaryToFBParameters(params)
+        fbParameters[AppEvents.ParameterName.orderID] = transactionId
+        fbParameters[AppEvents.ParameterName.content] = productId
+
+        AppEvents.shared.logPurchase(
+            amount: amount,
+            currency: currency,
+            parameters: fbParameters
+        )
+    }
+
+
     @objc public func getFBAnonymousID() -> String {
         return AppEvents.shared.anonymousID
     }
-
 }

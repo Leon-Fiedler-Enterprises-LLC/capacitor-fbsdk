@@ -2,10 +2,13 @@ package com.dabchy.plugins.facebookevents;
 
 import android.content.Context;
 import android.os.Bundle;
+import com.facebook.appevents.AppEventsConstants;
 import com.facebook.appevents.AppEventsLogger;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Logger;
 import com.getcapacitor.Plugin;
+import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Iterator;
 
 public class FacebookEvents {
@@ -43,6 +46,33 @@ public class FacebookEvents {
         } else {
             logger.logEvent(event);
         }
+    }
+
+    public void logPurchase(double amount, String currencyString, String transactionId, String productId, JSObject params) {
+        AppEventsLogger logger = getLogger();
+        if (logger == null) {
+            Logger.warn(LOG_TAG, "Unable to log purchase because no valid context is available for the Facebook SDK.");
+            return;
+        }
+
+        Bundle parameters = new Bundle();
+        if (params != null) {
+            for (Iterator<String> it = params.keys(); it.hasNext();) {
+                String key = it.next();
+                String value = params.getString(key);
+                if (value != null) {
+                    parameters.putString(key, value);
+                }
+            }
+        }
+        parameters.putString(AppEventsConstants.EVENT_PARAM_ORDER_ID, transactionId);
+        parameters.putString(AppEventsConstants.EVENT_PARAM_CONTENT, productId);
+
+        logger.logPurchase(
+            BigDecimal.valueOf(amount),
+            Currency.getInstance(currencyString),
+            parameters
+        );
     }
 
     private synchronized AppEventsLogger getLogger() {

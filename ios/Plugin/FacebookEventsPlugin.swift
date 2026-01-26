@@ -57,4 +57,30 @@ public class FacebookEventsPlugin: CAPPlugin {
             "anonymousID": anonymousID
         ])
     }
+
+    @objc func logPurchase(_ call: CAPPluginCall) {
+        guard let amount = call.getDouble("amount") else {
+            call.reject("Missing amount argument")
+            return
+        }
+
+        guard let currency = call.getString("currency") else {
+            call.reject("Missing currency argument")
+            return
+        }
+
+        guard let transactionId = call.getString("transactionId") else {
+            call.reject("Missing transactionId argument")
+            return
+        }
+
+        guard let productId = call.getString("productId") else {
+            call.reject("Missing productId argument")
+            return
+        }
+
+        let params = call.getObject("params") ?? [:]
+        facebookEvents.logPurchase(amount: amount, currency: currency, transactionId: transactionId, productId: productId, params: params as NSDictionary)
+        call.resolve()
+    }
 }

@@ -46,4 +46,8 @@ export class FacebookEventsWeb
   async getFBAnonymousID(): Promise<{ anonymousID: string }> {
     return Promise.reject('getFBAnonymousID is not implemented on web platform');
   }
+
+  async logPurchase(options: { amount: number; currency: string; transactionId: string; productId: string; }): Promise<void> {
+    return Promise.reject('logPurchase is not implemented on web platform');
+  }
 }

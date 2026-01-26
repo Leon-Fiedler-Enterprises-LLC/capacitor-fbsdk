@@ -7,4 +7,5 @@ CAP_PLUGIN(FacebookEventsPlugin, "FacebookEvents",
            CAP_PLUGIN_METHOD(setAdvertiserTrackingEnabled, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(logEvent, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(getFBAnonymousID, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(logPurchase, CAPPluginReturnPromise);
 )
