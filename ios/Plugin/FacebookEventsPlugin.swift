@@ -4,7 +4,15 @@ import FBSDKCoreKit
 import UIKit
 
 @objc(FacebookEventsPlugin)
-public class FacebookEventsPlugin: CAPPlugin {
+public class FacebookEventsPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "FacebookEventsPlugin"
+    public let jsName = "FacebookEvents"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "setAdvertiserTrackingEnabled", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "logEvent", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getFBAnonymousID", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "logPurchase", returnType: CAPPluginReturnPromise)
+    ]
     private let facebookEvents = FacebookEvents()
 
     public override func load() {

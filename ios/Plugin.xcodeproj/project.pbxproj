@@ -10,9 +10,7 @@
 		2F98D68224C9AAE500613A4C /* FacebookEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F98D68124C9AAE400613A4C /* FacebookEvents.swift */; };
 		50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFF88201F53D600D50D53 /* Plugin.framework */; };
 		50ADFF97201F53D600D50D53 /* FacebookEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50ADFF96201F53D600D50D53 /* FacebookEventsTests.swift */; };
-		50ADFF99201F53D600D50D53 /* FacebookEventsPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 50ADFF8B201F53D600D50D53 /* FacebookEventsPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
-		50ADFFA82020EE4F00D50D53 /* FacebookEventsPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50ADFFA72020EE4F00D50D53 /* FacebookEventsPlugin.m */; };
 		50E1A94820377CB70090CE1A /* FacebookEventsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E1A94720377CB70090CE1A /* FacebookEventsPlugin.swift */; };
 		BF06D7FBA6863AE675DD84BF /* Pods_PluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 203995E6F49F188A98998370 /* Pods_PluginTests.framework */; };
 		D7724FFF0E32D51CC7620AE9 /* Pods_Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 457BF50354F5CF104CF045D6 /* Pods_Plugin.framework */; };
@@ -34,13 +32,11 @@
 		319D9780D2CFF94D34127CC6 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
 		457BF50354F5CF104CF045D6 /* Pods_Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFF88201F53D600D50D53 /* Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		50ADFF8B201F53D600D50D53 /* FacebookEventsPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FacebookEventsPlugin.h; sourceTree = "<group>"; };
 		50ADFF8C201F53D600D50D53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50ADFF91201F53D600D50D53 /* PluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFF96201F53D600D50D53 /* FacebookEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookEventsTests.swift; sourceTree = "<group>"; };
 		50ADFF98201F53D600D50D53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50ADFFA52020D75100D50D53 /* Capacitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Capacitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		50ADFFA72020EE4F00D50D53 /* FacebookEventsPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FacebookEventsPlugin.m; sourceTree = "<group>"; };
 		50E1A94720377CB70090CE1A /* FacebookEventsPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FacebookEventsPlugin.swift; sourceTree = "<group>"; };
 		D85B798EBE47DB5E7417D5A9 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		E00CC7F4A09D8489EB64D07E /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -106,8 +102,6 @@
 			children = (
 				50E1A94720377CB70090CE1A /* FacebookEventsPlugin.swift */,
 				2F98D68124C9AAE400613A4C /* FacebookEvents.swift */,
-				50ADFF8B201F53D600D50D53 /* FacebookEventsPlugin.h */,
-				50ADFFA72020EE4F00D50D53 /* FacebookEventsPlugin.m */,
 				50ADFF8C201F53D600D50D53 /* Info.plist */,
 			);
 			path = Plugin;
@@ -139,7 +133,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50ADFF99201F53D600D50D53 /* FacebookEventsPlugin.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,7 +316,6 @@
 			files = (
 				50E1A94820377CB70090CE1A /* FacebookEventsPlugin.swift in Sources */,
 				2F98D68224C9AAE500613A4C /* FacebookEvents.swift in Sources */,
-				50ADFFA82020EE4F00D50D53 /* FacebookEventsPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

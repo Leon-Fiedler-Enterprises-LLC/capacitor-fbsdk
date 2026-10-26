@@ -3,6 +3,8 @@ package com.dabchy.plugins.facebookevents;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.facebook.FacebookSdk;
@@ -14,23 +16,51 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import java.util.ArrayList;
+import java.util.List;
 
 @CapacitorPlugin(name = "FacebookEvents")
 public class FacebookEventsPlugin extends Plugin {
 
     private static final String LOG_TAG = "FacebookEventsPlugin";
 
+    // Without FacebookInitProvider, the SDK starts this long after the plugin loads,
+    // well past app launch.
+    private static final long DEFERRED_INITIALIZATION_DELAY_MS = 10_000;
+
     private FacebookEvents facebookEvents;
+
+    private volatile boolean sdkReady = false;
+
+    // Plugin calls made before the SDK is ready. Only touched on the plugin thread.
+    private final List<Runnable> pendingCalls = new ArrayList<>();
 
     @Override
     public void load() {
         facebookEvents = new FacebookEvents(this);
-        initializeFacebookSdk();
+
+        if (FacebookSdk.isInitialized()) {
+            // FacebookInitProvider already initialized the SDK during process start.
+            initializeFacebookSdk();
+            sdkReady = true;
+            return;
+        }
+
+        // The app removed FacebookInitProvider to keep the SDK off the launch path.
+        new Handler(Looper.getMainLooper()).postDelayed(
+            () -> bridge.execute(this::initializeAfterStartup),
+            DEFERRED_INITIALIZATION_DELAY_MS
+        );
     }
 
     @Override
     protected void handleOnStart() {
         super.handleOnStart();
+        // Before that, the deferred initialization activates the app.
+        if (!sdkReady) {
+            return;
+        }
+
         Application application = resolveApplication();
 
         if (application == null) {
@@ -64,10 +94,12 @@ public class FacebookEventsPlugin extends Plugin {
             return;
         }
 
-        initializeFacebookSdk();
-        FacebookSdk.setAdvertiserIDCollectionEnabled(enabled);
-        FacebookSdk.setAutoLogAppEventsEnabled(enabled);
-        FacebookSdk.setAutoInitEnabled(enabled);
+        whenSdkReady(() -> {
+            initializeFacebookSdk();
+            FacebookSdk.setAdvertiserIDCollectionEnabled(enabled);
+            FacebookSdk.setAutoLogAppEventsEnabled(enabled);
+            FacebookSdk.setAutoInitEnabled(enabled);
+        });
         call.resolve();
     }
 
@@ -80,13 +112,15 @@ public class FacebookEventsPlugin extends Plugin {
         }
 
         JSObject params = call.getObject("params", new JSObject());
-        initializeFacebookSdk();
+        whenSdkReady(() -> {
+            initializeFacebookSdk();
 
-        if (facebookEvents == null) {
-            facebookEvents = new FacebookEvents(this);
-        }
+            if (facebookEvents == null) {
+                facebookEvents = new FacebookEvents(this);
+            }
 
-        facebookEvents.logEvent(event, params);
+            facebookEvents.logEvent(event, params);
+        });
         call.resolve();
     }
 
@@ -104,13 +138,15 @@ public class FacebookEventsPlugin extends Plugin {
             return;
         }
 
-        initializeFacebookSdk();
+        whenSdkReady(() -> {
+            initializeFacebookSdk();
 
-        if (facebookEvents == null) {
-            facebookEvents = new FacebookEvents(this);
-        }
+            if (facebookEvents == null) {
+                facebookEvents = new FacebookEvents(this);
+            }
 
-        facebookEvents.logPurchase(amount, currencyString, transactionId, productId, params);
+            facebookEvents.logPurchase(amount, currencyString, transactionId, productId, params);
+        });
 
         call.resolve();
     }
@@ -118,22 +154,57 @@ public class FacebookEventsPlugin extends Plugin {
 
     @PluginMethod
     public void getFBAnonymousID(PluginCall call) {
+        // Resolves once the SDK is ready, which may be after the startup delay.
+        whenSdkReady(() -> {
+            initializeFacebookSdk();
+
+            Application application = resolveApplication();
+            if (application == null) {
+                call.reject("Unable to get anonymous ID because the application reference is null.");
+                return;
+            }
+
+            try {
+                String anonymousId = AppEventsLogger.getAnonymousAppDeviceGUID(application);
+                JSObject result = new JSObject();
+                result.put("anonymousID", anonymousId);
+                call.resolve(result);
+            } catch (Exception e) {
+                call.reject("Failed to get anonymous ID: " + e.getMessage());
+            }
+        });
+    }
+
+    /** Runs on the plugin thread. */
+    private void whenSdkReady(Runnable work) {
+        if (sdkReady) {
+            work.run();
+        } else {
+            pendingCalls.add(work);
+        }
+    }
+
+    /** Runs on the plugin thread, so SDK setup stays off the main thread. */
+    private void initializeAfterStartup() {
         initializeFacebookSdk();
-        
+        new Handler(Looper.getMainLooper()).post(this::activateAfterStartup);
+    }
+
+    /** Runs on the main thread, like the activation in handleOnStart. */
+    private void activateAfterStartup() {
         Application application = resolveApplication();
-        if (application == null) {
-            call.reject("Unable to get anonymous ID because the application reference is null.");
-            return;
+        if (application != null) {
+            AppEventsLogger.activateApp(application);
         }
 
-        try {
-            String anonymousId = AppEventsLogger.getAnonymousAppDeviceGUID(application);
-            JSObject result = new JSObject();
-            result.put("anonymousID", anonymousId);
-            call.resolve(result);
-        } catch (Exception e) {
-            call.reject("Failed to get anonymous ID: " + e.getMessage());
-        }
+        sdkReady = true;
+        bridge.execute(() -> {
+            List<Runnable> calls = new ArrayList<>(pendingCalls);
+            pendingCalls.clear();
+            for (Runnable call : calls) {
+                call.run();
+            }
+        });
     }
 
     private void initializeFacebookSdk() {

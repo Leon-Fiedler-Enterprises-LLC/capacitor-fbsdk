@@ -1,6 +1,6 @@
 {
   "name": "capacitor-facebook-events",
-  "version": "7.0.7",
+  "version": "7.0.8",
   "description": "Facebook events tracking in Capacitor applications",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -11,7 +11,8 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "CapacitorFacebookEvents.podspec"
+    "CapacitorFacebookEvents.podspec",
+    "Package.swift"
   ],
   "author": "Ghazi Ketata",
   "license": "MIT",
